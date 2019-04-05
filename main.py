@@ -13,7 +13,7 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
-        pg.key.set_repeat(500, 100)
+        # pg.key.set_repeat(500, 100)
         # hold arrow keys for 500 milisec(1/2 sec, then it
         # then it repeats every 100 mili (tenth of a second)
         self.load_data()
@@ -21,7 +21,9 @@ class Game:
     def load_data(self):
         game_folder = path.dirname(__file__)
         #the location where our game named py is runnin,g  from
-        self.map = Map(path.join(game_folder, 'map2.txt'))
+        img_folder = path.join(game_folder, 'img')
+        self.map = Map(path.join(game_folder, 'map3.txt'))
+        self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         # self.map_data = []
         # with open(path.join(game_folder, 'map.txt'), 'rt') as f:
         #     for line in f:
@@ -83,6 +85,7 @@ class Game:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         # self.all_sprites.draw(self.screen)
         # the above code is same as the code above it  ^, it's a shortcut
+        # pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
         pg.display.flip()
 
     def events(self):
