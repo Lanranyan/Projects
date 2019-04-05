@@ -1,5 +1,7 @@
 import pygame as pg
 from settings import *
+from tilemap import collide_hit_rect
+vec = pg.math.Vector2
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -7,30 +9,41 @@ class Player(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = game.player_img   # pg.Surface((TILESIZE, TILESIZE))
         # Makes the sprite a square the size of one tile
-        self.image.fill(YELLOW)
         self.rect = self.image.get_rect()
-        self.vx, self.vy = 0, 0
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
+        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect.center = self.rect.center
+        self.vel = vec(0, 0)
+        self.pos = vec(x, y) * TILESIZE
+        self.rot = 0
+        #tracks how far we rotated (works same as velocity)
+
+        # self.x = x * TILESIZE
+        # self.y = y * TILESIZE
         # self x and y keeps track what grid coordinate player is on
 
     def get_keys(self):
-        self.vx, self.vy = 0, 0
+        self.rot_speed = 0
+        self.vel = vec(0, 0)
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -PLAYER_SPEED
+            self.rot_speed = PLAYER_ROT_SPEED
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = PLAYER_SPEED
+            self.rot_speed = -PLAYER_ROT_SPEED
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -PLAYER_SPEED
+            self.vel = vec(PLAYER_SPEED, 0).rotate(-self.rot)
+            # moves in Player speed to x, but 0 in y. Move rite
+            # The "-" in self.rot is to rotate in opposite dir we're pointing
         if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = PLAYER_SPEED
-        if self.vx != 0 and self.vy != 0:
+            self.vel = vec(-PLAYER_SPEED / 2, 0).rotate(-self.rot)
+            #we move half speed backwards
+
+        # if self.vel.x != 0 and self.vel.y != 0:
             # '!=' not equal to
-            self.vx *= 0.7071
-            self.vy *= 0.7071
+            # self.vel *= 0.7071
+            # self.vx *= 0.7071
+            # self.vy *= 0.7071
             # need to divide by square root of 2, or 1.414
 
     # def move(self, dx=0, dy=0):
@@ -44,23 +57,23 @@ class Player(pg.sprite.Sprite):
         #will check if there's anything in the square
         #dir = direction
         if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False )
+            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_rect )
             if hits:
-                if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vx < 0:
-                    self.x = hits[0].rect.right
-                self.vx = 0
-                self.rect.x = self.x
+                if self.vel.x > 0:
+                    self.pos.x = hits[0].rect.left - self.hit_rect.width / 2
+                if self.vel.x < 0:
+                    self.pos.x = hits[0].rect.right + self.hit_rect.width / 2
+                self.vel.x = 0
+                self.hit_rect.centerx = self.pos.x
         if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False )
+            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_rect)
             if hits:
-                if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vy < 0:
-                    self.y = hits[0].rect.bottom
-                self.vy = 0
-                self.rect.y = self.y
+                if self.vel.y > 0:
+                    self.pos.y = hits[0].rect.top - self.hit_rect.height / 2
+                if self.vel.y < 0:
+                    self.pos.y = hits[0].rect.bottom + self.hit_rect.height / 2
+                self.vel. y = 0
+                self.hit_rect.centery = self.pos.y
 
 
         # for wall in self.game.walls:
@@ -74,18 +87,25 @@ class Player(pg.sprite.Sprite):
 
     def update(self):
         self.get_keys()
-        self.x += self.vx * self.game.dt  #OG '= self.x * TILESIZE'
-        self.y += self.vy * self.game.dt
+        self.rot = (self.rot + self.rot_speed * self.game.dt) % 360
+        self.image = pg.transform.rotate(self.game.player_img, self.rot)
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+        self.pos += self.vel * self.game.dt
+        # self.x += self.vx * self.game.dt  #OG '= self.x * TILESIZE'
+        # self.y += self.vy * self.game.dt
         # dt is the timestep of the game, and can be seen on main
         # under def run. It helps move at consistent speed
         # than at a framerate
         #draws the rect at the pixel matchin it, the x * tilesize determines
         # where the upperleft hand corner of the square is drawn
-        self.rect.x = self.x
+        self.hit_rect.centerx = self.pos.x
         self.collide_with_walls('x')  #collides with walls in the x direction
-        self.rect.y = self.y
+        self.hit_rect.centery = self.pos.y
         self.collide_with_walls('y')
         #checks wall collision for each axis
+        self.rect.center = self.hit_rect.center
+
         # if pg.sprite.spritecollideany(self, self.game.walls):
         #     self.x -= self.vx * self.game.dt
         #     self.y -= self.vy * self.game.dt
