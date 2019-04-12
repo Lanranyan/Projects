@@ -1,4 +1,6 @@
 #Tilemap Demo
+# https://www.youtube.com/watch?v=gbRAqFl21SA
+# 8:59
 
 import pygame as pg
 import sys
@@ -24,6 +26,8 @@ class Game:
         img_folder = path.join(game_folder, 'img')
         self.map = Map(path.join(game_folder, 'map3.txt'))
         self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
+        self.wall_img = pg.image.load(path.join(img_folder, WALL_IMG)).convert_alpha()
+        self.wall_img = pg.transform.scale(self.wall_img, (TILESIZE, TILESIZE))
         # self.map_data = []
         # with open(path.join(game_folder, 'map.txt'), 'rt') as f:
         #     for line in f:
@@ -79,8 +83,9 @@ class Game:
 
 
     def draw(self):
+        pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         self.screen.fill(BGCOLOR)
-        self.draw_grid()   ##NECESSaRY to include '()' or it won't draw
+        # self.draw_grid()   ##NECESSaRY to include '()' or it won't draw
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         # self.all_sprites.draw(self.screen)

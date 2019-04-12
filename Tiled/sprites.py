@@ -112,6 +112,14 @@ class Player(pg.sprite.Sprite):
         #     #undoes the movement so you don't go through wall
         #     self.rect.topleft = (self.x, self.y)
 
+class Mob(pg.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.mobs
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = MOB_IMG
+        self.rect = self.image.get_rect()
+        self.pos = vec(x, y) * TILESIZE
+
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -119,8 +127,7 @@ class Wall(pg.sprite.Sprite):
         #all sprites makes sure its drawn, walls holds all wall objeccts
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        self.image = game.wall_img
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
