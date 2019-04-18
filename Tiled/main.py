@@ -1,6 +1,5 @@
 #Tilemap Demo
 # https://www.youtube.com/watch?v=gbRAqFl21SA
-# 8:59
 
 import pygame as pg
 import sys
