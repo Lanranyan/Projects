@@ -39,6 +39,7 @@ class Player(pg.sprite.Sprite):
         self.vel = vec(0, 0)
         self.pos = vec(x, y) * TILESIZE
         self.rot = 0
+        self.last_shot = 0
         #tracks how far we rotated (works same as velocity)
 
         # self.x = x * TILESIZE
@@ -60,6 +61,14 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vel = vec(-PLAYER_SPEED / 2, 0).rotate(-self.rot)
             #we move half speed backwards
+        if keys[pg.K_SPACE] or keys[pg.K_z]:
+            now = pg.time.get_ticks()
+            if now - self.last_shot > BULLET_RATE:
+                self.last_shot = now
+                dir = vec(1, 0).rotate(-self.rot)
+                # make a vec a vec that rotate at player rot
+                Bullet(self.game, self.pos, dir)
+                #passes the game, player pos, and dir
 
         # if self.vel.x != 0 and self.vel.y != 0:
             # '!=' not equal to
@@ -166,6 +175,24 @@ class Mob(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
 
+class Bullet(pg.sprite.Sprite):
+    def __init__(self, game, pos, dir):  #pos and dir = vec
+        self.groups = game.all_sprites, game.bullets
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = game.bullet_img
+        self.rect = self.image.get_rect()
+        self.pos = pos
+        self.rect.center = pos
+        self.vel = dir * BULLET_SPEED
+        self.spawn_time = pg.time.get_ticks()
+
+    def update(self):
+        self.pos += self.vel * self.game.dt
+        self.rect.center = self.pos
+        # updates rect to location
+        if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
+            self.kill()
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):
