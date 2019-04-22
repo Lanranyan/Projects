@@ -67,7 +67,8 @@ class Player(pg.sprite.Sprite):
                 self.last_shot = now
                 dir = vec(1, 0).rotate(-self.rot)
                 # make a vec a vec that rotate at player rot
-                Bullet(self.game, self.pos, dir)
+                pos = self.pos + BARREL_OFFSET.rotate.rotate(-self.rot)
+                Bullet(self.game, pos, dir)
                 #passes the game, player pos, and dir
 
         # if self.vel.x != 0 and self.vel.y != 0:
@@ -182,7 +183,7 @@ class Bullet(pg.sprite.Sprite):
         self.game = game
         self.image = game.bullet_img
         self.rect = self.image.get_rect()
-        self.pos = pos
+        self.pos = vec(pos)
         self.rect.center = pos
         self.vel = dir * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
@@ -191,6 +192,8 @@ class Bullet(pg.sprite.Sprite):
         self.pos += self.vel * self.game.dt
         self.rect.center = self.pos
         # updates rect to location
+        if pg.sprite.spritecollideany(self, self.game.walls):
+            self.kill()
         if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
             self.kill()
 

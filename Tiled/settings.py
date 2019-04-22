@@ -1,4 +1,5 @@
 import pygame as pg
+vec = pg.math.Vector2
 
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
@@ -29,6 +30,7 @@ PLAYER_ROT_SPEED = 250
 # PLAYER_IMG = 'Hooded.png'
 PLAYER_IMG = 'manBlue_gun.png'
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
+BARREL_OFFSET = vec(20, 20)
 
 #Gun Settings
 BULLET_IMG = 'bullet.png'
