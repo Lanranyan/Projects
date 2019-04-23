@@ -1,4 +1,6 @@
 import pygame as pg
+from random import uniform
+#ret numbers as whole
 from settings import *
 from tilemap import collide_hit_rect
 vec = pg.math.Vector2
@@ -67,9 +69,11 @@ class Player(pg.sprite.Sprite):
                 self.last_shot = now
                 dir = vec(1, 0).rotate(-self.rot)
                 # make a vec a vec that rotate at player rot
-                pos = self.pos + BARREL_OFFSET.rotate.rotate(-self.rot)
+                pos = self.pos + BARREL_OFFSET.rotate(-self.rot)
                 Bullet(self.game, pos, dir)
                 #passes the game, player pos, and dir
+                self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
+                #sets the vel = kickback and wherever play moves
 
         # if self.vel.x != 0 and self.vel.y != 0:
             # '!=' not equal to
@@ -84,28 +88,6 @@ class Player(pg.sprite.Sprite):
     #         self.x += dx
     #         self.y += dy
     # OUT OF DATE
-
-    def collide_with_walls(self, dir):  #dx=0, dy=0
-        #will check if there's anything in the square
-        #dir = direction
-        if dir == 'x':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_rect )
-            if hits:
-                if self.vel.x > 0:
-                    self.pos.x = hits[0].rect.left - self.hit_rect.width / 2
-                if self.vel.x < 0:
-                    self.pos.x = hits[0].rect.right + self.hit_rect.width / 2
-                self.vel.x = 0
-                self.hit_rect.centerx = self.pos.x
-        if dir == 'y':
-            hits = pg.sprite.spritecollide(self, self.game.walls, False, collide_hit_rect)
-            if hits:
-                if self.vel.y > 0:
-                    self.pos.y = hits[0].rect.top - self.hit_rect.height / 2
-                if self.vel.y < 0:
-                    self.pos.y = hits[0].rect.bottom + self.hit_rect.height / 2
-                self.vel. y = 0
-                self.hit_rect.centery = self.pos.y
 
 
         # for wall in self.game.walls:
@@ -185,7 +167,8 @@ class Bullet(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.pos = vec(pos)
         self.rect.center = pos
-        self.vel = dir * BULLET_SPEED
+        spread = uniform(-GUN_SPREAD, GUN_SPREAD)
+        self.vel = dir.rotate(spread) * BULLET_SPEED
         self.spawn_time = pg.time.get_ticks()
 
     def update(self):
