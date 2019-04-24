@@ -74,11 +74,18 @@ class Game:
         self.all_sprites.update()
         self.camera.update(self.player)
             #track the player
+        # mobs hit player
+        hits = pg.sprite.spritecollide(self.player, self.mobs, False, collide_hit_rect)
+        for hit in hits:
+            self.player.health -= MOB_DAMAGE
+            hit.vel = vec(0, 0)
+            if self.player.health <= 0:
+                self.playing = False
         # Bullet hit mobs
         hits = pg.sprite.groupcollide(self.mobs, self.bullets, False, True,)
         for hit in hits:
-            hit.kill()
-
+            hit.health -= BULLET_DAMAGE
+            hit.vel = vec(0, 0)
 
     def draw_grid(self):
         #draws a grid litterally
@@ -96,6 +103,8 @@ class Game:
         self.screen.fill(BGCOLOR)
         # self.draw_grid()   ##NECESSaRY to include '()' or it won't draw
         for sprite in self.all_sprites:
+            if isinstance(sprite, Mob):
+                sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         # self.all_sprites.draw(self.screen)
         # the above code is same as the code above it  ^, it's a shortcut
