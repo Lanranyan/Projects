@@ -46,4 +46,4 @@ class Camera:
         # halves the size of the screen since self.width and height are
         # double it, so 2048 - 1024
 
-        self.cameraa = pg.Rect(x, y, self.width, self.height)
+        self.camera = pg.Rect(x, y, self.width, self.height)
