@@ -20,6 +20,15 @@ class Map:
         self.height = self.tileheight * TILESIZE
         #pixel width
 
+class TiledMap:
+    def __init__(self, filename):
+        tm = pytmx.load_pygame(filename, pixelalpha=True)
+        self.width = tm.width * tm.tilewidth
+        self.height = tm.height * tm.tileheight
+        self.tmxdata = tm
+
+    def render(self, surface):
+        
 class Camera:
     def __init__(self, width, height):
         self.camera = pg.Rect(0, 0, width, height)
@@ -46,4 +55,4 @@ class Camera:
         # halves the size of the screen since self.width and height are
         # double it, so 2048 - 1024
 
-        self.cameraa = pg.Rect(x, y, self.width, self.height)
+        self.camera = pg.Rect(x, y, self.width, self.height)
