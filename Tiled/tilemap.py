@@ -28,7 +28,7 @@ class TiledMap:
         self.tmxdata = tm
 
     def render(self, surface):
-        
+
 class Camera:
     def __init__(self, width, height):
         self.camera = pg.Rect(0, 0, width, height)
