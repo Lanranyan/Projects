@@ -41,7 +41,10 @@ class Game:
         game_folder = path.dirname(__file__)
         #the location where our game named py is runnin,g  from
         img_folder = path.join(game_folder, 'img')
-        self.map = Map(path.join(game_folder, 'map3.txt'))
+        map_folder = path.join(game_folder, 'maps')
+        self.map = TiledMap(path.join(game_folder, 'level1.txt'))
+        self.map_img = self.map.make_map()
+        self.map_rect = self.map_img.get_rect()
         self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
         self.bullet_img = pg.image.load(path.join(img_folder, BULLET_IMG)).convert_alpha()
         self.mob_img = pg.image.load(path.join(img_folder, MOB_IMG)).convert_alpha()
@@ -61,16 +64,17 @@ class Game:
         # coordinates of where you want to spawn based on the grid
         #     for x in range(10, 20):
         #         Wall(self, x, 5)
-        for row, tiles in enumerate(self.map.data):
-            #enumerate
-            #row = index values, tiles = strings of all charac
-            for col, tile in enumerate(tiles):
-                if tile == '1':
-                    Wall(self, col, row)
-                if tile == 'M':
-                    Mob(self, col, row)
-                if tile == 'P':
-                    self.player = Player(self, col, row)
+        # for row, tiles in enumerate(self.map.data):
+        #     #enumerate
+        #     #row = index values, tiles = strings of all charac
+        #     for col, tile in enumerate(tiles):
+        #         if tile == '1':
+        #             Wall(self, col, row)
+        #         if tile == 'M':
+        #             Mob(self, col, row)
+        #         if tile == 'P':
+        #             self.player = Player(self, col, row)
+        self.player = Player(self, 5, 5)
         self.camera = Camera(self.map.width, self.map.height)
 
 
@@ -120,7 +124,8 @@ class Game:
 
     def draw(self):
         pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
-        self.screen.fill(BGCOLOR)
+        # self.screen.fill(BGCOLOR)
+        self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         # self.draw_grid()   ##NECESSaRY to include '()' or it won't draw
         for sprite in self.all_sprites:
             if isinstance(sprite, Mob):
