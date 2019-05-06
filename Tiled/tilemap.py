@@ -1,4 +1,5 @@
 import pygame as pg
+import pytmx
 from settings import *
 
 def collide_hit_rect(one, two):
@@ -23,11 +24,30 @@ class Map:
 class TiledMap:
     def __init__(self, filename):
         tm = pytmx.load_pygame(filename, pixelalpha=True)
+        # load_pygame is there because pytmx is just for reading tiled maps, not using pygame
+        # pixelalpha = True ensures the transparency of our tiles and tilemap
         self.width = tm.width * tm.tilewidth
         self.height = tm.height * tm.tileheight
         self.tmxdata = tm
 
+    # takes a surface and draws all our tiles on it in the
+    # order the layers are in, so ground then walls...
     def render(self, surface):
+        ti = self.tmxdata.get_tile_image_by_gid
+        # gid means global identifier to read the tiles by finding its image
+        for layer in self.tmxdata.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer):
+                # in tiled, there are 3 layers: ^ Tile, Object, Image
+                for x, y, gid, in layer:
+                    tile = ti(gid)
+                    if tile:
+                        surface.blit(tile, (x * self.tmxdata.tilewidth,
+                                            y * self.tmxdata.tileheight))
+    # creates a surface to draw map onto
+    def make_map(self):
+        temp_surface = pg.Surface((self.width, self.height))
+        self.render(temp_surface)
+        return temp_surface
 
 class Camera:
     def __init__(self, width, height):
@@ -35,10 +55,15 @@ class Camera:
         self.width = width
         self.height = height
 
+    # applies offset to sprite
     def apply(self, entity):
         return entity.rect.move(self.camera.topleft)
         # the move command, when applied to rect, gives a new rect
         # that's shifted by the camera.topleft
+
+    # applies offset to rectangle
+    def apply_rect(self, rect):
+        return rect.move(self.camera.topleft)
 
     def update(self, target):
         x = -target.rect.centerx + int(WIDTH / 2)
