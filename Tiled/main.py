@@ -26,6 +26,7 @@ def draw_player_health(surf, x, y, pct):
     pg.draw.rect(surf, col, fill_rect)
     pg.draw.rect(surf, WHITE, outline_rect, 2)
     # fill is the width, and BAR_HEIGHT is height
+
 class Game:
     def __init__(self):
         pg.init()
@@ -42,7 +43,7 @@ class Game:
         #the location where our game named py is runnin,g  from
         img_folder = path.join(game_folder, 'img')
         map_folder = path.join(game_folder, 'maps')
-        self.map = TiledMap(path.join(game_folder, 'level1.txt'))
+        self.map = TiledMap(path.join(map_folder, 'level1.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG)).convert_alpha()
