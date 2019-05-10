@@ -79,10 +79,14 @@ class Game:
             # loop thru the list of objects
             if tile_object.name == 'player':
                 self.player = Player(self, tile_object.x, tile_object.y)
+            if tile_object.name == 'zombie':
+                Mob(self, tile_object.x, tile_object.y)
             if tile_object.name == 'wall':
                 Obstacle(self, tile_object.x, tile_object.y,
                          tile_object.width, tile_object.height)
         self.camera = Camera(self.map.width, self.map.height)
+        self.draw_debug = False
+        # a flag is a variable that can be true/false
 
 
     def run(self):
@@ -138,6 +142,12 @@ class Game:
             if isinstance(sprite, Mob):
                 sprite.draw_health()
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+            if self.draw_debug:
+                pg.draw.rect(self.screen, AQUAMARINE, self.camera.apply_rect(sprite.hit_rect), 1)
+        if self.draw_debug:
+            for wall in self.walls:
+                pg.draw.rect(self.screen, CYAN, self.camera.apply_rect(wall.rect), 1)
+
         # self.all_sprites.draw(self.screen)
         # the above code is same as the code above it  ^, it's a shortcut
         # pg.draw.rect(self.screen, WHITE, self.player.hit_rect, 2)
@@ -153,6 +163,8 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.quit()
+                if event.key == pg.K_h:
+                    self.draw_debug = not self.draw_debug
                 # if event.key == pg.K_LEFT:
                 #     self.player.move(dx=-1)
                 # if event.key == pg.K_RIGHT:
