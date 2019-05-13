@@ -36,6 +36,7 @@ class Player(pg.sprite.Sprite):
         self.image = game.player_img   # pg.Surface((TILESIZE, TILESIZE))
         # Makes the sprite a square the size of one tile
         self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
         self.vel = vec(0, 0)
@@ -134,6 +135,7 @@ class Mob(pg.sprite.Sprite):
         self.game = game
         self.image = game.mob_img
         self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
         self.hit_rect = MOB_HIT_RECT.copy()
         self.hit_rect.center = self.rect.center
         self.pos = vec(x, y)
