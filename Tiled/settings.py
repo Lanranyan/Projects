@@ -14,8 +14,8 @@ AQUAMARINE = (127, 255, 212)
 CYAN = (0, 255, 255)
 
 # game settings
-WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
-HEIGHT = 768  # 16 * 48 or 32 * 24 or 64 * 12
+WIDTH = 960   # 16 * 64 or 32 * 32 or 64 * 16
+HEIGHT = 704  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 60
 TITLE = "Tilemap Demo"
 BGCOLOR = BROWN
@@ -51,5 +51,11 @@ MOB_HIT_RECT = pg.Rect(0, 0, 30, 30)
 MOB_HEALTH = 100
 MOB_DAMAGE = 10
 MOB_KNOCKBACK = 20
+
+# Effects
+MUZZLE_FLASHES = ['whitePuff15.png', 'whitePuff16.png', 'whitePuff17.png',
+                  'whitePuff18.png']
+
+FLASH_DURATION = 40
 
 

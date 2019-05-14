@@ -1,5 +1,5 @@
 import pygame as pg
-from random import uniform
+from random import uniform, choice, randint
 #ret numbers as whole
 from settings import *
 from tilemap import collide_hit_rect
@@ -76,6 +76,7 @@ class Player(pg.sprite.Sprite):
                 #passes the game, player pos, and dir
                 self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
                 #sets the vel = kickback and wherever play moves
+                MuzzleFlash(self.game, pos)
 
         # if self.vel.x != 0 and self.vel.y != 0:
             # '!=' not equal to
@@ -226,3 +227,19 @@ class Obstacle(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
+
+class MuzzleFlash(pg.sprite.Sprite):
+    def __init__(self, game, pos):
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        size = randint(20, 50)
+        self.image = pg.transform.scale(choice(game.gun_flashes), (size, size))
+        self.rect = self.image.get_rect()
+        self.pos = pos
+        self.rect.center = pos
+        self.spawn_time = pg.time.get_ticks()
+
+    def update(self):
+        if pg.time.get_ticks() - self.spawn_time > FLASH_DURATION:
+            self.kill()
