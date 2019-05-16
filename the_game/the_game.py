@@ -2,11 +2,13 @@
 # https://sivasantosh.wordpress.com/2012/07/16/pygame-template/
 # https://gist.github.com/MatthewJA/7544830
 # https://www.digitalocean.com/community/tutorials/understanding-tuples-in-python-3
+# https://medium.com/@angellom/writing-a-python-dungeon-game-part-i-47e35668f16b
 
 import pygame
 from pygame.locals import *
 # evokes stuff like event.type w/o pygame. in front
 
+# Initialises pygame and creates a window
 pygame.init()
 # init = initialize - starts up all pygame modules
 # pygame.font.init()
@@ -23,28 +25,33 @@ pygame.init()
 # GAME SURFACE
 
 display_width = 800
-display_height = 600
+display_height = 544
+tilesize = 32
 
 game_display = pygame.display.set_mode((display_width, display_height))
 # (800, 600) is a tuple as argumuent to set_mode()
+pygame.display.set_caption('The Game')
 
-pygame.display.update()
-# updates portions of the screen, flip updates all
+clock = pygame.time.Clock()
 
-# GAME LOOP
-while True:
-
+# FUNCTIONS
 def event_handler():
     for event in pygame.event.get():
         # print(event)
         if event.type == QUIT or (
-            event.type == KEYDOWN and (
-            event.key == K_ESCAPE or
-            event.key == K_q
-            )):
+                event.type == KEYDOWN and (
+                event.key == K_ESCAPE or
+                event.key == K_q
+        )):
             pygame.quit()
             # uninitializes the pygame modules within pygame
             quit()
             # exits the program
 
+# GAME LOOP
+while True:
+    clock.tick(FPS)
+    event_handler()
 
+    pygame.display.update()
+    # updates portions of the screen, flip updates all

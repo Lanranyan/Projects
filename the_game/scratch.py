@@ -12,7 +12,10 @@ pygame.display.update()
 
 while True:
     for event in pygame.event.get():
-        if event.type == QUIT:
+        if event.type == QUIT or (
+            event.type == KEYDOWN and (
+            event.key == K_ESCAPE or
+            event.key == K_q
+            )):
             pygame.quit()
-            exit()
-
+            quit()
