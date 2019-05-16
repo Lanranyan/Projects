@@ -6,6 +6,8 @@
 
 import pygame
 from pygame.locals import *
+from settings import *
+import os
 # evokes stuff like event.type w/o pygame. in front
 
 # Initialises pygame and creates a window
@@ -24,11 +26,9 @@ pygame.init()
 
 # GAME SURFACE
 
-display_width = 800
-display_height = 544
-tilesize = 32
 
-game_display = pygame.display.set_mode((display_width, display_height))
+
+game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 # (800, 600) is a tuple as argumuent to set_mode()
 pygame.display.set_caption('The Game')
 
@@ -52,6 +52,5 @@ def event_handler():
 while True:
     clock.tick(FPS)
     event_handler()
-
     pygame.display.update()
     # updates portions of the screen, flip updates all
